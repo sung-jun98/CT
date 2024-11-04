@@ -3,62 +3,66 @@ import java.util.*;
 import java.io.*;
 
 public class Main {
-    static int N, M;
-    static ArrayList<ArrayList<Integer>> subjects;
-    static int[] chasu;
-    static Deque<Integer> deque;
-    static int[] semester;
+	static int N, M;
+	static List<Integer>[] subjects;
+	static int[] count;
+	static Deque<Integer> deque;
+	static int[] answer;
 
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
 
-        subjects = new ArrayList<>();
-        N = Integer.parseInt(st.nextToken());
-        M = Integer.parseInt(st.nextToken());
-        
-        chasu = new int[N + 1];
-        deque = new ArrayDeque<Integer>();
-        semester = new int[N + 1];
-        
-        for (int i = 0; i <= N; i++) {
-            subjects.add(new ArrayList<Integer>());
-        }
+		N = Integer.parseInt(st.nextToken());
+		M = Integer.parseInt(st.nextToken());
 
-        for (int i = 0; i < M; i++) {
-            st = new StringTokenizer(br.readLine());
-            int A = Integer.parseInt(st.nextToken());
-            int B = Integer.parseInt(st.nextToken());
+		subjects = new ArrayList[N + 1];
+		count = new int[N + 1];
 
-            subjects.get(A).add(B);
-            chasu[B] += 1;
-        }
+		deque = new ArrayDeque<>();
+		answer = new int[N + 1];
 
-        for (int i = 1; i < N + 1; i++) {
-            if (chasu[i] == 0) {
-                deque.offerLast(i);
-                semester[i] = 1;
-            }
-        }
+		for (int i = 0; i <= N; i++) {
+			subjects[i] = new ArrayList<>();
+		}
 
-        while (!deque.isEmpty()) {
-            int current = deque.pollFirst();
+		for (int i = 0; i < M; i++) {
+			st = new StringTokenizer(br.readLine());
+			int start = Integer.parseInt(st.nextToken());
+			int end = Integer.parseInt(st.nextToken());
 
-            for (int next : subjects.get(current)) {
-                chasu[next] -= 1;
+			subjects[start].add(end);
+			count[end] += 1;
 
-                if (chasu[next] == 0) {
-                    deque.offerLast(next);
-                }
+		}
 
-                if (semester[next] < semester[current] + 1) {
-                    semester[next] = semester[current] + 1;
-                }
-            }
-        }
+		for (int i = 0; i <= N; i++) {
+			if (count[i] == 0) {
+				deque.offerLast(i);
+			}
+		}
 
-        for (int i = 1; i <= N; i++) {
-            System.out.print(semester[i] + " ");
-        }
-    }
+		int time = 1;
+		while (!deque.isEmpty()) {
+			int size = deque.size();
+			for (int i = 0; i < size; i++) {
+				int current = deque.pollFirst();
+				answer[current] = time;
+				for(int next : subjects[current]) {
+					count[next]--;
+					if(count[next] == 0) {
+						deque.offerLast(next);
+						
+					}
+				}
+			}
+			
+			time += 1;
+		}
+		
+		for(int i= 1; i<= N; i++) {
+			System.out.print(answer[i] + " ");
+		}
+	}
+
 }
