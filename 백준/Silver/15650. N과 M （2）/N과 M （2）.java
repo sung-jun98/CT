@@ -1,33 +1,34 @@
-
 import java.util.*;
 import java.io.*;
 
 public class Main {
     static int N, M;
+
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
+        String[] inputs = br.readLine().split(" ");
 
-        N = Integer.parseInt(st.nextToken());
-        M = Integer.parseInt(st.nextToken());
+        N = Integer.parseInt(inputs[0]);
+        M = Integer.parseInt(inputs[1]);
 
-        makeCombination(1, 0, new int[M]);
+        permute(1, new ArrayList<Integer>(), 0);
 
     }
 
-    private static void makeCombination(int start, int cnt, int[] selected) { //시작 위치, 시도한 횟수
-        // 종료조건
-        if(cnt == M){
-            for(int i=0; i<M; i++){
-                System.out.print(selected[i] + " ");
+    private static void permute(int start, List<Integer> result, int selected) {
+        if (selected == M) {
+            for (int answer : result) {
+                System.out.print(answer + " ");
             }
             System.out.println();
-            return ;
+
+            return;
         }
 
-        for(int i=start; i<=N; i++){
-            selected[cnt] = i;
-            makeCombination(i+1, cnt+1, selected);
+        for (int i = start; i <= N; i++) {
+            result.add(i);
+            permute(i + 1, result, selected + 1);
+            result.remove(result.size() - 1);
         }
     }
 }
