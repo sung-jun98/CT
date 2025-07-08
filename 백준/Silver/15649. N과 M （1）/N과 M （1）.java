@@ -1,38 +1,40 @@
-
 import java.util.*;
 import java.io.*;
 
-public class Main {
+public class Main{
     static int N, M;
+
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st  = new StringTokenizer(br.readLine());
+        String[] inputs = br.readLine().split(" ");
 
-        N = Integer.parseInt(st.nextToken());
-        M = Integer.parseInt(st.nextToken());
+        N = Integer.parseInt(inputs[0]);
+        M = Integer.parseInt(inputs[1]);
 
-        makePermutaion(0,new boolean[N+1], new int[M]);
+
+        permute(0, new ArrayList<Integer>(), new boolean[N + 1]);
+
     }
 
-    private static void makePermutaion(int cnt, boolean[] visited,  int[] selected) {
-        // 종료조건
-        if(cnt == M){
-            for(int result : selected){
-                System.out.print(result + " ");
+    private static void permute(int dept, List<Integer> result, boolean[] visited) {
+        if (dept == M) {
+            for (int answer : result) {
+                System.out.print(answer + " ");
             }
             System.out.println();
-            return ;
         }
 
-        // 전체 조회
-        for(int i=1; i<=N; i++){
-            if(!visited[i]){
-                selected[cnt] = i;
+        for (int i = 1; i <= N; i++) {
+            if (!visited[i]) {
+
+                result.add(i);
                 visited[i] = true;
-                makePermutaion(cnt+1, visited, selected);
+
+                permute(dept + 1, result, visited);
+
                 visited[i] = false;
+                result.remove(result.size() - 1);
             }
         }
     }
 }
-
