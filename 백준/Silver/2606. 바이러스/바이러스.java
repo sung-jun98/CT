@@ -1,91 +1,57 @@
-
-
 import java.util.*;
 import java.io.*;
-/*
-7
-6
-1 2
-2 3
-1 5
-5 2
-5 6
-4 7
 
-[]
-[2, 5]
-[1, 3, 5]
-[2]
-[7]
-[1, 2, 6]
-[5]
-[4]
-
- */
 public class Main {
-	static int N, M;
-	static ArrayList<ArrayList<Integer>> computers;
-	static boolean[] visited;
-	static Deque<Integer> deque;
+    static int N, M;
+    static List<List<Integer>> inputs;
+    static int answer;
 
-	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st;
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
 
-		N = Integer.parseInt(br.readLine());
-		computers = new ArrayList<>();
-		for (int i = 0; i < N + 1; i++) {
-			computers.add(new ArrayList<>());
-		}
+        N = Integer.parseInt(br.readLine());
+        M = Integer.parseInt(br.readLine());
 
-		visited = new boolean[N + 1];
-		M = Integer.parseInt(br.readLine());
+        inputs = new ArrayList<>();
 
-		for (int i = 0; i < M; i++) {
-			st = new StringTokenizer(br.readLine());
-			int first = Integer.parseInt(st.nextToken());
-			int last = Integer.parseInt(st.nextToken());
+        for (int i = 0; i <= N; i++) {
+            inputs.add(new ArrayList<>());
+        }
 
-			computers.get(first).add(last);
-			computers.get(last).add(first);
-		}
+        for (int i = 0; i < M; i++) {
+            st = new StringTokenizer(br.readLine());
+            int a = Integer.parseInt(st.nextToken());
+            int b = Integer.parseInt(st.nextToken());
 
-		bfs();
-		int answer = getAnswer();
-		System.out.println(answer - 1);
-		
-	}
-	
-	static private void bfs() {
-		deque = new ArrayDeque<>();
-		visited[1] = true;
-		for(int num : computers.get(1)) {
-			visited[num] = true;
-			deque.offerLast(num);
-		}
-		
-		while(!deque.isEmpty()) {
-			int next = deque.pollFirst();
-			
-			for(int num : computers.get(next)) {
-				if(!visited[num]) {
-					visited[num] = true;
-					deque.offerLast(num);
-				}
-				
-			}
-		}
-	}
-	
-	static private int getAnswer() {
-		int answer = 0;
-		for(boolean next : visited) {
-			if(next) {
-				answer += 1;
-			}
-		}
-		
-		return answer;
-	}
+            inputs.get(a).add(b);
+            inputs.get(b).add(a);
+        }
 
+        answer = bfs(1, new boolean[N + 1]);
+
+        System.out.println(answer);
+    }
+
+    private static int bfs(int start, boolean[] visited) {
+
+        Deque<Integer> queue = new ArrayDeque<>();
+        visited[start] = true;
+        queue.offerLast(start);
+        int cnt = 0;
+
+        while (!queue.isEmpty()) {
+            int curr = queue.pollFirst();
+
+            for (int next : inputs.get(curr)) {
+                if (!visited[next]) {
+                    visited[next] = true;
+                    cnt += 1;
+                    queue.offerLast(next);
+                }
+            }
+        }
+
+        return cnt;
+    }
 }
